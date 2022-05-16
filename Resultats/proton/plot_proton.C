@@ -6,8 +6,8 @@ TFile* myFile = new TFile("data.root");
 TTree* myTree = (TTree*) myFile->Get("theRunTree");
 auto tprof = new TProfile("tprof", "Stopping Power", 100000, 0.005, 100, 1, 1000);
 
-vector <float> *edep; 
-vector <float> *e; 
+vector <float> *edep;
+vector <float> *e;
 vector <float> *l;
 
 myTree->SetBranchAddress("EdepProton", &edep);
@@ -19,11 +19,11 @@ int Events = myTree->GetEntries();
 for (int i=0; i< Events; i++)
 	{
 	myTree->GetEvent(i);
-        
+
 	for (int j=0; j<edep->size();j++)
 		{
 		tprof->Fill(e->at(j), edep->at(j)/(l->at(j)*2.329002));
-                
+
 		}
 	}
 
@@ -35,7 +35,7 @@ for (int i=0; i< a; i++)
 	myTree->GetEvent(i);
         eventlength=0;
         El[i]=e->at(0);
-        
+
 	for (int j=0; j<edep->size();j++)
           { eventlength+=l->at(j);}
          Ll[i]=2.329002*eventlength;
@@ -97,10 +97,3 @@ graphL->Draw("same");
 
 
 }
-
-
-
-
-
-
-

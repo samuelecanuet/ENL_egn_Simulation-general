@@ -16,7 +16,7 @@ do
     while [[ $(pgrep -x ENLegnSim | wc -l) -gt 4 ]]
     do
 	sleep 10
-    done 
+    done
         ((e1=$e1*'8/4'))
         # Creation du fichier a partir du fichier de base (fichier temporaire)
         cp vrml_base.mac base_${e1}_fichier_bis1.mac
@@ -26,10 +26,10 @@ do
         # Suppression fichier temporaire
         rm base_${e1}_fichier_bis.mac
         rm base_${e1}_fichier_bis1.mac
-	./ENLegnSim ../Resultats/${part}_Si_${e1}keV 10 base_${e1}_fichier.mac
+	./ENLegnSim ../Resultats/${part}_Si_${e1}keV 100 base_${e1}_fichier.mac
         rm base_${e1}_fichier.mac
-        
 
+#merge files in data.root
 done
 datafile=()
 while [ "$e2" -lt "$emax" ]
@@ -46,5 +46,3 @@ rm ../Resultats/${part}_Si_${e3}keV.root
 done
 mv ../Resultats/data.root ../Resultats/$part/
 echo "Fin de traitement"
-
-

@@ -1,0 +1,3 @@
+alias Simu "cd /home/local1/arnaud/ENL_egn_Simulation-general"
+alias root "root -l"
+alias ls "ls --color=auto -lrth"

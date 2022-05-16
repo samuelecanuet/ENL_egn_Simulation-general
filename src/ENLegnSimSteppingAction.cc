@@ -48,7 +48,7 @@ ENLegnSimSteppingAction::ENLegnSimSteppingAction()
     //###########################START EM INFOS PART#########################
     //#######################################################################
     //#######################################################################
-    
+
     if (Parent_ID==0)
     {
       evtac->FillEProton(aStep->GetPreStepPoint()->GetKineticEnergy()/MeV);
@@ -57,8 +57,11 @@ ENLegnSimSteppingAction::ENLegnSimSteppingAction()
       //G4cout<<"EdepProton="<<aStep->GetTotalEnergyDeposit()/MeV<<G4endl;
       evtac->FillLProton(aStep->GetStepLength()/cm);
       //G4cout<<"Length="<<aStep->GetStepLength()/cm<<G4endl;
-     
-    }   
 
+    }
+    else
+    {
+     aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+    }
 
   }

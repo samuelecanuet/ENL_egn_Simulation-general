@@ -1,8 +1,8 @@
-/tracking/verbose 1
+/tracking/verbose 0
 /run/verbose 0
 #/run/printProgress 1
 
-/run/setCut 1 nm
+
 /run/initialize
 
 
