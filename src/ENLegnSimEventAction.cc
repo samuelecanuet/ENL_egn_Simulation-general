@@ -36,9 +36,10 @@ void ENLegnSimEventAction::BeginOfEventAction(const G4Event* evt){
 
   //G4cout << "EVENT : " << event_id << G4endl;
 
-  Statistics.EProton.clear();
-  Statistics.EdepProton.clear();
-  Statistics.LProton.clear();
+  Statistics.EPart.clear();
+  Statistics.EdepPart.clear();
+  Statistics.LPart.clear();
+  Statistics.ProcessPart.clear();
 }
 
 

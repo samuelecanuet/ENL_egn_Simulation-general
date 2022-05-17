@@ -10,9 +10,9 @@ vector <float> *edep;
 vector <float> *e;
 vector <float> *l;
 
-myTree->SetBranchAddress("EdepProton", &edep);
-myTree->SetBranchAddress("EProton", &e);
-myTree->SetBranchAddress("LProton", &l);
+myTree->SetBranchAddress("EdepPart", &edep);
+myTree->SetBranchAddress("EPart", &e);
+myTree->SetBranchAddress("LPart", &l);
 
 int Events = myTree->GetEntries();
 
@@ -74,7 +74,7 @@ graphL->SetLineColor(kRed);
 
 
 //////////////
-TCanvas *c1 = new TCanvas("c1", "Proton", 20,20,1500,500);
+TCanvas *c1 = new TCanvas("c1", "Part", 20,20,1500,500);
 c1->Divide(2,1);
 
 c1->cd(1);

@@ -4,93 +4,144 @@ gStyle->SetPalette(1);
 
 TFile* myFile = new TFile("data.root");
 TTree* myTree = (TTree*) myFile->Get("theRunTree");
-auto tprof = new TProfile("tprof", "Stopping Power", 5000, 0.01, 100, 1, 100);
+auto tprof = new TProfile("tprof", "Stopping Power", 10000000, 0.005, 10000, 0.01, 10);
+auto tconv = new TProfile("tconv", "Stopping Power", 10000000, 0.005, 10000, 0.01, 10);
+auto tphot = new TProfile("tphot", "Stopping Power", 1000000, 0.005, 10000, 0.01, 10);
+auto tcompt = new TProfile("tcompt", "Stopping Power", 1000000, 0.005, 10000, 0.01, 10);
+auto trayl = new TProfile("trayl", "Stopping Power", 100000, 0.005, 10000, 0.01, 10);
 
-vector <float> *edep; 
-vector <float> *e; 
+
+
+
+vector <float> *edep;
+vector <float> *e;
 vector <float> *l;
+vector <std::string> *process;
 
-myTree->SetBranchAddress("EdepProton", &edep);
-myTree->SetBranchAddress("EProton", &e);
-myTree->SetBranchAddress("LProton", &l);
+float energy;
+string processname;
+myTree->SetBranchAddress("EdepPart", &edep);
+myTree->SetBranchAddress("EPart", &e);
+myTree->SetBranchAddress("LPart", &l);
+myTree->SetBranchAddress("ProcessPart", &process);
 
 int Events = myTree->GetEntries();
 
 for (int i=0; i< Events; i++)
-	{
-	myTree->GetEvent(i);
-        
-	for (int j=0; j<edep->size();j++)
-		{
-		tprof->Fill(e->at(j), edep->at(j)/(l->at(j)*2.329002));
-                
-		}
-	}
-
-const int a=1500;
-float El[a], Ll[a];
-float eventlength;
-for (int i=0; i< a; i++)
 {
 	myTree->GetEvent(i);
-        eventlength=0;
-        El[i]=e->at(0);
-        
-	for (int j=0; j<edep->size();j++)
-          { eventlength+=l->at(j);}
-         Ll[i]=2.329002*eventlength;
+
+	for (int j=0; j<e->size();j++)
+	{
+		energy=e->at(j);
+		processname=process->at(j);
+		//total
+    tprof->Fill(energy, 1/(l->at(j)*2.329002));
+		//Convertion Interne
+		if (processname == "conv")
+			tconv->Fill(energy, 1/(l->at(j)*2.329002));
+
+		else if (processname == "compt")
+			tcompt->Fill(energy, 1/(l->at(j)*2.329002));
+
+		else if (processname == "phot")
+			tphot->Fill(energy, 1/(l->at(j)*2.329002));
+
+		else if (processname == "Rayl")
+			trayl->Fill(energy, 1/(l->at(j)*2.329002));
+
+		else
+			cout<<processname<<endl;
+	}
 }
-TGraph* graphl = new TGraph(a, El, Ll);
+
+
 
 
 ////////////
 
-ifstream file("data_gamma_stop.csv");
+ifstream file("data_gamma.csv");
 const int n=81;
+//float E[n], RAYL[n], COMPT[n], PHOT[n], CONV[2*n], TOTAL[n];
 float E[n], N[n];
-
 for (int i=0; i<n; i++)
     {
-      file >> E[i] >> N[i];
+      file >> E[i] >> N[i];// >> COMPT[i] >> PHOT[i] >> CONV[2*i] >> CONV[2*i+1] >> TOTAL[i];
     }
 file.close();
 
-TGraph* graphstop = new TGraph(n, E, N);
-graphstop->SetLineColor(kRed);
 
-////////////
-ifstream fileL("data_gamma_length.csv");
-const int b=81;
-float E1[b], L[b];
-
-for (int i=0; i<b; i++)
-    {
-      fileL >> E1[i] >> L[i];
-    }
-fileL.close();
-
-TGraph* graphL = new TGraph(b, E1, L);
-graphL->SetLineColor(kRed);
 
 
 //////////////
 TCanvas *c1 = new TCanvas("c1", "Gamma", 20,20,1500,500);
-c1->Divide(2,1);
+c1->Divide(3,2);
 
+//Total
+TGraph* graphtotal = new TGraph(n, E, TOTAL);
 c1->cd(1);
-tprof->Draw("lp");
 gPad->SetLogx();
 gPad->SetLogy();
-tprof->GetXaxis()->SetTitle("Energy (MeV)");
-tprof->GetYaxis()->SetTitle("Stopping Power (MeV cm2/g)");
-graphstop->Draw("same");
+tprof->Draw("lp");
+graphtotal->Draw("same");
+graphtotal->SetLineColor(kRed);
 
+tprof->SetLineColor(kBlack);
+tprof->GetXaxis()->SetTitle("Energy (MeV)");
+tprof->GetYaxis()->SetTitle("Total Attenuation (g/cm2)");
+
+
+//Rayleigh effect
+TGraph* graphrayl = new TGraph(n, E, RAYL);
 c1->cd(2);
 gPad->SetLogx();
 gPad->SetLogy();
-graphl->Draw("A*");
-graphl->SetTitle("CSDA ; Energy (MeV); CSDA (g/cm2)");
-graphL->Draw("same");
+graphrayl->Draw();
+graphrayl->SetLineColor(kRed);
+trayl->Draw("same");
+trayl->SetLineColor(kBlack);
+trayl->GetXaxis()->SetTitle("Energy (MeV)");
+trayl->GetYaxis()->SetTitle("(g/cm2)");
+
+//Compton effect
+TGraph* graphcompt = new TGraph(n, E, N);
+c1->cd(3);
+gPad->SetLogx();
+gPad->SetLogy();
+graphcompt->Draw();
+graphcompt->SetLineColor(kRed);
+tcompt->Draw("same");
+tcompt->SetLineColor(kBlack);
+tcompt->GetXaxis()->SetTitle("Energy (MeV)");
+tcompt->GetYaxis()->SetTitle("(g/cm2)");
+
+//Photoelectric
+TGraph* graphphot = new TGraph(n, E, PHOT);
+c1->cd(4);
+gPad->SetLogx();
+gPad->SetLogy();
+graphphot->Draw();
+graphphot->SetLineColor(kRed);
+tphot->Draw("same");
+tphot->SetLineColor(kBlack);
+tphot->GetXaxis()->SetTitle("Energy (MeV)");
+tphot->GetYaxis()->SetTitle("(g/cm2)");
+
+
+//Conversion interne
+TGraph* graphconv = new TGraph(2*n, E, CONV);
+c1->cd(5);
+gPad->SetLogx();
+gPad->SetLogy();
+graphconv->Draw();
+graphconv->SetLineColor(kRed);
+tconv->Draw("same");
+tconv->SetLineColor(kBlack);
+tconv->GetXaxis()->SetTitle("Energy (MeV)");
+tconv->GetYaxis()->SetTitle("(g/cm2)");
+
+
+
 
 
 
@@ -98,10 +149,3 @@ graphL->Draw("same");
 
 
 }
-
-
-
-
-
-
-

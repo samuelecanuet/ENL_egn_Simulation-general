@@ -42,6 +42,10 @@ ENLegnSimSteppingAction::ENLegnSimSteppingAction()
     G4EventManager *evtman = G4EventManager::GetEventManager();
     ENLegnSimEventAction *evtac = (ENLegnSimEventAction*)evtman->GetUserEventAction();
     G4int Parent_ID = aStep->GetTrack()->GetParentID();
+    G4float kineticenergy = aStep->GetPreStepPoint()->GetKineticEnergy();
+    G4float depositenergy = aStep->GetTotalEnergyDeposit();
+    G4float length = aStep->GetStepLength();
+    G4String ProcessName = aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
 
     //#######################################################################
     //#######################################################################
@@ -51,17 +55,20 @@ ENLegnSimSteppingAction::ENLegnSimSteppingAction()
 
     if (Parent_ID==0)
     {
-      evtac->FillEProton(aStep->GetPreStepPoint()->GetKineticEnergy()/MeV);
-      //G4cout<<"EProton="<<aStep->GetPreStepPoint()->GetKineticEnergy()/MeV<<G4endl;
-      evtac->FillEdepProton(aStep->GetTotalEnergyDeposit()/MeV);
-      //G4cout<<"EdepProton="<<aStep->GetTotalEnergyDeposit()/MeV<<G4endl;
-      evtac->FillLProton(aStep->GetStepLength()/cm);
+      evtac->FillEPart(kineticenergy/MeV);
+      //G4cout<<"EPart="<<aStep->GetPreStepPoint()->GetKineticEnergy()/MeV<<G4endl;
+      evtac->FillEdepPart(depositenergy/MeV);
+      //G4cout<<"EdepPart="<<aStep->GetTotalEnergyDeposit()/MeV<<G4endl;
+      evtac->FillLPart(length/cm);
       //G4cout<<"Length="<<aStep->GetStepLength()/cm<<G4endl;
+      evtac->FillProcessPart(ProcessName);
+      //G4cout<<"Process="<<ProcessName<<G4endl;
+
 
     }
     else
     {
-     aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+    aStep->GetTrack()->SetTrackStatus(fStopAndKill);
     }
 
   }

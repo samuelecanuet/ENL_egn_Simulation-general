@@ -22,9 +22,10 @@ class G4Event;
 //This struct carries statistics for the whole Run
 struct RunTally {
 
-  std::vector<float> EProton;
-  std::vector<float> EdepProton;
-  std::vector<float> LProton;
+  std::vector<float> EPart;
+  std::vector<float> EdepPart;
+  std::vector<float> LPart;
+  std::vector<std::string> ProcessPart;
 
   inline int operator ==(const RunTally& right) const
   {return (this==&right);}
@@ -41,9 +42,10 @@ public:
 public:
   void BeginOfEventAction(const G4Event*);
   void EndOfEventAction(const G4Event*);
-  void FillEProton(G4float e){Statistics.EProton.push_back(e);}
-  void FillEdepProton(G4float e){Statistics.EdepProton.push_back(e);}
-  void FillLProton(G4float e){Statistics.LProton.push_back(e);}
+  void FillEPart(G4float e){Statistics.EPart.push_back(e);}
+  void FillEdepPart(G4float e){Statistics.EdepPart.push_back(e);}
+  void FillLPart(G4float e){Statistics.LPart.push_back(e);}
+  void FillProcessPart(G4String e){Statistics.ProcessPart.push_back(e);}
 
 private:
 
