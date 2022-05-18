@@ -1,8 +1,8 @@
-/tracking/verbose 1
+/tracking/verbose 0
 /run/verbose 0
 #/run/printProgress 1
 
-#/run/setCut 1 nm
+
 /run/initialize
 
 
@@ -12,8 +12,8 @@
 ### PART TO SIMULATE PARTICLE WITH GPS (no setgun) ###
 ######################################################
 /gps/number 1
-/gps/particle proton
+/gps/particle gamma
 /gps/pos/type Point
 /gps/pos/centre 0.0 0.0 0.0
-/gps/energy 160000 keV
+/gps/energy 78 keV
 /gps/direction 0.0 0.0 1.0

@@ -46,7 +46,7 @@ ENLegnSimSteppingAction::ENLegnSimSteppingAction()
     G4float depositenergy = aStep->GetTotalEnergyDeposit();
     G4float length = aStep->GetStepLength();
     G4String ProcessName = aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
-
+    G4String PreVolume = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName();
     //#######################################################################
     //#######################################################################
     //###########################START EM INFOS PART#########################
@@ -63,12 +63,9 @@ ENLegnSimSteppingAction::ENLegnSimSteppingAction()
       //G4cout<<"Length="<<aStep->GetStepLength()/cm<<G4endl;
       evtac->FillProcessPart(ProcessName);
       //G4cout<<"Process="<<ProcessName<<G4endl;
-
-
     }
-    else
-    {
     aStep->GetTrack()->SetTrackStatus(fStopAndKill);
-    }
+
+
 
   }

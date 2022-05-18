@@ -89,7 +89,7 @@ Geometry::~Geometry(){
 
 G4LogicalVolume *Geometry::GetPlaque1(){
 
-  Material = detecProp->GetMaterial("Silicon");
+  Material = detecProp->GetMaterial("G4_Si");
 
   G4Box *Box = new G4Box   ("Box",             //its name
   			    //PlaqueLength/2, PlaqueLength/2, PlaqueThickness/2);    //its size
@@ -98,4 +98,3 @@ G4LogicalVolume *Geometry::GetPlaque1(){
 
   return LogicalVolume;
 }
-
