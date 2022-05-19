@@ -43,9 +43,10 @@ void ENLegnSimRunAction::BeginOfRunAction(const G4Run* aRun){
     RunBranch = theRunTree->Branch("EdepPart", "vector<float>", &Stats.EdepPart);
     RunBranch = theRunTree->Branch("LPart", "vector<float>", &Stats.LPart);
     RunBranch = theRunTree->Branch("ProcessPart", "vector<std::string>", &Stats.ProcessPart);
+    //RunBranch = theRunTree->Branch("NbProcess", "NbProcess/F", &Stats.NbProcess);
 
     //set the random seed to the CPU clock
-  //G4Random::setTheEngine(new CLHEP::HepJamesRandom);
+    //G4Random::setTheEngine(new CLHEP::HepJamesRandom);
     G4long seed = time(NULL);
     G4Random::setTheSeed(seed);
     G4cout << "seed = " << seed << G4endl;

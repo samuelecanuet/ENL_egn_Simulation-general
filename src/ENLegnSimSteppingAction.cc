@@ -47,6 +47,7 @@ ENLegnSimSteppingAction::ENLegnSimSteppingAction()
     G4float length = aStep->GetStepLength();
     G4String ProcessName = aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
     G4String PreVolume = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName();
+    G4String partname = aStep->GetTrack()->GetDefinition()->GetParticleName();
     //#######################################################################
     //#######################################################################
     //###########################START EM INFOS PART#########################
@@ -63,6 +64,14 @@ ENLegnSimSteppingAction::ENLegnSimSteppingAction()
       //G4cout<<"Length="<<aStep->GetStepLength()/cm<<G4endl;
       evtac->FillProcessPart(ProcessName);
       //G4cout<<"Process="<<ProcessName<<G4endl;
+      if (partname == "gamma")
+      {
+        if (processname == "conv" || processname == "phot" || processname == "compt" || processname == "Rayl")
+        {
+          evtac->Addtotal(1);
+        }
+
+      }
     }
     aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 

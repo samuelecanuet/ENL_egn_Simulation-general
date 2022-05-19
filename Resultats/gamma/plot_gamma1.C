@@ -32,98 +32,91 @@ float energy;
 string processname;
 double y;
 
-float actualenergy;  //juste pour comparer la premiere energie
-int count_total=0, count_conv=0, count_phot=0, count_compt=0, count_rayl=0;     //compte le nb de "process" pour une energie
-vector <int> count_list_total, count_list_phot, count_list_rayl, count_list_compt, count_list_conv; // garde le nb d'nergie différente dans chaque élément
+float actualenergy=0;  //juste pour comparer la premiere energie
+int count_total=0, count_compt=0, count_rayl=0, count_conv=0, count_phot=0, count_event=0; //compte le nb de "process" pour une energie
+vector <int> count_list_total;
+vector <int> count_list_conv, count_list_rayl, count_list_phot, count_list_compt;// garde le nb d'energie différente dans chaque élément
 vector <float> energy_list;
 energy_list.push_back(0);
-int count=0, count1=0;
+vector <int> event_list;
 
-for (int i=0; i< Events; i++)
+
+for (int i=0; i<= Events; i++)
 {
 			myTree->GetEvent(i);
-			processname=process->at(0);
-			if (e->at(0) != actualenergy)
-				{
-        	count_list_total.push_back(count_total);
-					count_list_phot.push_back(count_phot);
-					count_list_conv.push_back(count_conv);
-					count_list_compt.push_back(count_compt);
-					count_list_rayl.push_back(count_rayl);
-					energy_list.push_back(e->at(0));
-					actualenergy=e->at(0);
-					count_total=0;
-					count_conv=0;
-					count_phot=0;
-					count_compt=0;
-					count_rayl=0;
-					count++;
-				}
-			else
 
-			  {
-				  if (processname == "conv" || processname == "compt" || processname == "phot" || processname == "rayl")
-		    		{count_total++;
-						//cout<<count_total<<endl;
-						//cout<<processname<<endl;
-					}
-					if (processname == "conv")
-						{count_conv++;}
-					if (processname == "compt")
-	          {count_compt++;}
-					if (processname == "phot")
-						{count_phot++;}
-					if (processname == "Rayl")
-						{count_rayl++;}
-		    }
+			processname=process->at(0);
+
+
+      if (e->at(0) == actualenergy)
+      { count_event++;
+        if (processname == "conv" || processname == "phot" || processname == "compt" || processname == "Rayl")
+        {count_total++;}
+
+        if (processname == "conv")
+        {count_conv++;}
+        if (processname == "phot")
+        {count_phot++;}
+        if (processname == "compt")
+        {count_compt++;}
+        if (processname == "Rayl")
+        {count_rayl++;}
+      }
+      if (e->at(0) != actualenergy || i == Events)
+      {
+        count_list_total.push_back(count_total);
+        count_list_phot.push_back(count_phot);
+        count_list_conv.push_back(count_conv);
+        count_list_compt.push_back(count_compt);
+        count_list_rayl.push_back(count_rayl);
+        energy_list.push_back(e->at(0));
+        event_list.push_back(count_event);
+        actualenergy=e->at(0);
+        count_total=0;
+        count_phot=0;
+        count_conv=0;
+        count_compt=0;
+        count_rayl=0;
+        count_event=0;
+      }
+
 }
 
 
-int tot=0;
-int con=0;
-int com=0;
-int pho=0;
-int ray=0;
+int tot=0, con=0, com=0, pho=0, ray=0;
+
 float factor;
 
 for (int j=1; j<energy_list.size(); j++)
 {
 		energy=energy_list[j];
-		factor=M/(thinkness*d*Na*Events*1e-24);
+		factor=M/(thinkness*d*Na*event_list[j]*1e-24);
 
 		y=count_list_total[j]*factor;
-
     simutotal->SetPoint(tot, energy, y);
 		simutotal->SetPointError(tot, 0, factor*sqrt(count_list_total[j]));
 		tot++;
-    cout<<"energy="<<energy<<endl;
-		cout<<"nb event="<<count_list_total[j]<<endl;
-		cout<<count_total<<endl;
-		cout<<count<<endl;
-		cout<<count1<<endl;
-		cout<<"y="<<y<<endl;
-		cout<<factor*sqrt(count_list_total[j]);
 
-
-		y=count_list_phot[j]*factor;
+    y=count_list_phot[j]*factor;
     simuphot->SetPoint(pho, energy, y);
 		simuphot->SetPointError(pho, 0, factor*sqrt(count_list_phot[j]));
-		pho++;
+    pho++;
 
-		y=count_list_conv[j]*factor;
+    y=count_list_conv[j]*factor;
     simuconv->SetPoint(con, energy, y);
 		simuconv->SetPointError(con, 0, factor*sqrt(count_list_conv[j]));
 		con++;
 
-		y=count_list_compt[j]*factor;
+    y=count_list_compt[j]*factor;
     simucompt->SetPoint(com, energy, y);
-		simucompt->SetPointError(com, 0, y*sqrt(Events));
+		simucompt->SetPointError(com, 0, y*sqrt(count_list_compt[j]));
 		com++;
 
-		y=count_list_rayl[j]*factor;
+    y=count_list_rayl[j]*factor;
     simurayl->SetPoint(ray, energy, y);
-		//simurayl->SetPointError(ray, 0, factor*sqrt(count_list_rayl[j]));
+		simurayl->SetPointError(ray, 0, factor*sqrt(count_list_rayl[j]));
 		ray++;
+
 }
 
 
@@ -131,7 +124,7 @@ for (int j=1; j<energy_list.size(); j++)
 
 ifstream file("data_gamma.csv");
 const int n=57;
-double E[n], RAYL[n], COMPT[n], PHOT[n], CONVN[n], CONVE[n], TOTAL[n];
+double E[n], RAYL[n], COMPT[n], PHOT[n], CONVN[n], CONVE[n], TOTAL[n], CONV[n];
 
 for (int i=0; i<n; i++)
     {
@@ -188,27 +181,27 @@ simuphot->Draw("*same");
 graphphot->SetLineColor(kRed);
 graphphot->SetTitle("Photoelectric");
 
-
+for (int i=0; i<=n; i++)
+{
+CONV[i]=CONVN[i]+CONVE[i];
+}
 
 //Conversion interne nucléaire
-TGraph* graphconvn = new TGraph(n, E, CONVN);
+TGraph* graphconvn = new TGraph(n, E, CONV);
 c1->cd(5);
 gPad->SetLogx();
 gPad->SetLogy();
 graphconvn->Draw("al");
 simuconv->Draw("*same");
 graphconvn->SetLineColor(kRed);
-graphconvn->SetTitle("Nuclear Conversion");
+graphconvn->SetTitle("Conversion Interne");
 
 
-//Conversion interne electronique
-TGraph* graphconve = new TGraph(n, E, CONVE);
-c1->cd(6);
-gPad->SetLogx();
-gPad->SetLogy();
-graphconve->Draw("al");
-simuconv->Draw("*same");
-graphconve->SetLineColor(kRed);
-graphconve->SetTitle("Electronic Conversion");
+energy_list.clear();
+count_list_total.clear();
+count_list_compt.clear();
+count_list_phot.clear();
+count_list_rayl.clear();
+count_list_conv.clear();
 
 }

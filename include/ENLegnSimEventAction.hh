@@ -46,7 +46,7 @@ public:
   void FillEdepPart(G4float e){Statistics.EdepPart.push_back(e);}
   void FillLPart(G4float e){Statistics.LPart.push_back(e);}
   void FillProcessPart(G4String e){Statistics.ProcessPart.push_back(e);}
-
+  //void AddNbProcess(G4int nb){Statistics.NbProcess+=nb;}
 private:
 
   TTree *EventTree;

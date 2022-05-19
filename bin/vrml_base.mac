@@ -1,6 +1,6 @@
 /tracking/verbose 0
 /run/verbose 0
-#/run/printProgress 1
+/run/printProgress 200000
 
 
 /run/initialize

@@ -40,6 +40,7 @@ void ENLegnSimEventAction::BeginOfEventAction(const G4Event* evt){
   Statistics.EdepPart.clear();
   Statistics.LPart.clear();
   Statistics.ProcessPart.clear();
+
 }
 
 
