@@ -39,7 +39,9 @@ void ENLegnSimEventAction::BeginOfEventAction(const G4Event* evt){
   Statistics.EPart.clear();
   Statistics.EdepPart.clear();
   Statistics.LPart.clear();
-  Statistics.ProcessPart.clear();
+  Statistics.ProcessPart=0;
+  Statistics.NamePart="Unknown";
+
 
 }
 
@@ -50,5 +52,15 @@ void ENLegnSimEventAction::EndOfEventAction(const G4Event* evt){
 
   ENLegnSimRunAction *runac = (ENLegnSimRunAction*)(G4RunManager::GetRunManager()->GetUserRunAction());
 
+  if (Statistics.NamePart == "gamma")
+  {
+    if (Statistics.ProcessPart != 0)
+    {runac->UpdateStatistics(Statistics);}
+  }
+
+  if (Statistics.NamePart != "gamma")
+  {
     runac->UpdateStatistics(Statistics);
+  }
+
 }

@@ -45,31 +45,33 @@ ENLegnSimSteppingAction::ENLegnSimSteppingAction()
     G4float kineticenergy = aStep->GetPreStepPoint()->GetKineticEnergy();
     G4float depositenergy = aStep->GetTotalEnergyDeposit();
     G4float length = aStep->GetStepLength();
-    G4String ProcessName = aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
+    G4String processname = aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
     G4String PreVolume = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName();
     G4String partname = aStep->GetTrack()->GetDefinition()->GetParticleName();
+
     //#######################################################################
     //#######################################################################
     //###########################START EM INFOS PART#########################
     //#######################################################################
     //#######################################################################
 
-    if (Parent_ID==0)
+    if (Parent_ID == 0)
     {
       evtac->FillEPart(kineticenergy/MeV);
-      //G4cout<<"EPart="<<aStep->GetPreStepPoint()->GetKineticEnergy()/MeV<<G4endl;
+      //G4cout<<"EPart="<<kineticenergy/MeV<<G4endl;
       evtac->FillEdepPart(depositenergy/MeV);
-      //G4cout<<"EdepPart="<<aStep->GetTotalEnergyDeposit()/MeV<<G4endl;
+      //G4cout<<"EdepPart="<<depositenergy/MeV<<G4endl;
       evtac->FillLPart(length/cm);
-      //G4cout<<"Length="<<aStep->GetStepLength()/cm<<G4endl;
-      evtac->FillProcessPart(ProcessName);
-      //G4cout<<"Process="<<ProcessName<<G4endl;
+      //G4cout<<"Length="<<length/cm<<G4endl;
+      evtac->SetName(partname);
+      //G4cout<<"Particle Name : "<<partname<<G4endl;
+
       if (partname == "gamma")
       {
-        if (processname == "conv" || processname == "phot" || processname == "compt" || processname == "Rayl")
-        {
-          evtac->Addtotal(1);
-        }
+        if (processname == "conv"){evtac->SetProcess(1);}
+        if (processname == "phot"){evtac->SetProcess(2);}
+        if (processname == "compt"){evtac->SetProcess(3);}
+        if (processname == "Rayl"){evtac->SetProcess(4);}
 
       }
     }

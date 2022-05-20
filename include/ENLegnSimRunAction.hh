@@ -28,7 +28,7 @@ public:
 
   //adds the photon fates from an event to the run tree
   void UpdateStatistics(RunTally);
-  
+
 
 
 

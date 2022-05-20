@@ -2,8 +2,8 @@
 echo "Début de traitement"
 
 part=gamma
-emax=10000
-e=9000
+emax=1000000
+e=1
 
 pow='1/4'
 coef=10**$pow
@@ -29,7 +29,7 @@ do
         # Suppression fichier temporaire
         rm base_${e1}_fichier_bis.mac
         rm base_${e1}_fichier_bis1.mac
-	      ./ENLegnSim ../Resultats/${part}_Si_${e1}keV 10000000 base_${e1}_fichier.mac
+	      ./ENLegnSim ../Resultats/${part}_Si_${e1}keV 1000000 base_${e1}_fichier.mac
         rm base_${e1}_fichier.mac
 
 #merge files in data.root
@@ -41,7 +41,7 @@ let e2=$e2*$coef
 datafile+="../Resultats/${part}_Si_${e2}keV.root "
 done
 
-hadd -f ../Resultats/data1.root ${datafile[*]}
+hadd -f ../Resultats/data.root ${datafile[*]}
 while [ "$e3" -lt "$emax" ]
 do
 let e3=$e3*$coef

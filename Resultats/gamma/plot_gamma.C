@@ -17,9 +17,9 @@ TGraphErrors* simuphot = new TGraphErrors();
 TGraphErrors* simurayl = new TGraphErrors();
 
 vector <float> *edep;
-vector <float> *e;
+vector <double> *e;
 vector <float> *l;
-vector <std::string> *process;
+int process;
 
 myTree->SetBranchAddress("EdepPart", &edep);
 myTree->SetBranchAddress("EPart", &e);
@@ -27,111 +27,93 @@ myTree->SetBranchAddress("LPart", &l);
 myTree->SetBranchAddress("ProcessPart", &process);
 
 int Events = myTree->GetEntries();
-
-float energy;
-string processname;
 double y;
+double actualenergy=0;
+double emax;
+int tot=0, con=0, com=0, pho=0, ray=0;
+int proba;
+int event=1000000;
+float factor=M/(thinkness*d*Na*event*1e-24);
+int processmax=5;
 
-float actualenergy;  //juste pour comparer la premiere energie
-int count_total=0, count_conv=0, count_phot=0, count_compt=0, count_rayl=0;     //compte le nb de "process" pour une energie
-vector <int> count_list_total, count_list_phot, count_list_rayl, count_list_compt, count_list_conv; // garde le nb d'nergie différente dans chaque élément
-vector <float> energy_list;
-energy_list.push_back(0);
-int count=0, count1=0;
+myTree->GetEvent(Events-1);
+emax=e->at(0)*1000+1;
 
-for (int i=0; i< Events; i++)
+
+
+TH2F *h2 = new TH2F("h2","test",processmax-1,0,processmax,emax,0,emax);
+
+for (int i=0; i<= Events; i++)
 {
-			myTree->GetEvent(i);
-			processname=process->at(0);
-			if (e->at(0) != actualenergy)
-				{
-        	count_list_total.push_back(count_total);
-					count_list_phot.push_back(count_phot);
-					count_list_conv.push_back(count_conv);
-					count_list_compt.push_back(count_compt);
-					count_list_rayl.push_back(count_rayl);
-					energy_list.push_back(e->at(0));
-					actualenergy=e->at(0);
-					count_total=0;
-					count_conv=0;
-					count_phot=0;
-					count_compt=0;
-					count_rayl=0;
-					count++;
-				}
-			else
+		myTree->GetEvent(i);
+    h2->Fill(process, e->at(0)*1000);
+}
 
-			  {
-				  if (processname == "conv" || processname == "compt" || processname == "phot" || processname == "rayl")
-		    		{count_total++;
-						//cout<<count_total<<endl;
-						//cout<<processname<<endl;
-					}
-					if (processname == "conv")
-						{count_conv++;}
-					if (processname == "compt")
-	          {count_compt++;}
-					if (processname == "phot")
-						{count_phot++;}
-					if (processname == "Rayl")
-						{count_rayl++;}
-		    }
+for (int i=0; i<=emax;i++)
+{
+  int probatotal=0;
+  for (int j=0;j<=processmax;j++)
+  {
+    proba=h2->GetBinContent(j, i);
+    if (proba != 0)
+    {
+      probatotal+=proba;
+      if (j == processmax-1)
+      {
+        //cout<<"energy="<<i<<endl;
+        y=probatotal*factor;
+        //cout<<"sectioneff="<<y<<endl;
+        simutotal->SetPoint(tot, i, y);
+  		  simutotal->SetPointError(tot, 0, factor*sqrt(probatotal));
+  		  tot++;
+      }
+      if (j == 1)
+      {
+        y=proba*factor;
+        simuconv->SetPoint(con, i, y);
+    		simuconv->SetPointError(con, 0, factor*sqrt(proba));
+    		con++;
+      }
+
+      else if (j == 2)
+      {
+        y=proba*factor;
+        simuphot->SetPoint(pho, i, y);
+        simuphot->SetPointError(pho, 0, factor*sqrt(proba));
+        pho++;
+      }
+
+      else if (j == 3)
+      {
+        y=proba*factor;
+        simucompt->SetPoint(com, i, y);
+    		simucompt->SetPointError(com, 0, factor*sqrt(proba));
+    		com++;
+      }
+
+      else if (j == 4)
+      {
+        y=proba*factor;
+        simurayl->SetPoint(ray, i, y);
+    		simurayl->SetPointError(ray, 0, factor*sqrt(proba));
+    		ray++;
+      }
+
+    }
+
+
+  }
 }
 
 
-int tot=0;
-int con=0;
-int com=0;
-int pho=0;
-int ray=0;
-float factor;
 
-for (int j=1; j<energy_list.size(); j++)
-{
-		energy=energy_list[j];
-		factor=M/(thinkness*d*Na*Events*1e-24);
-
-		y=count_list_total[j]*factor;
-
-    simutotal->SetPoint(tot, energy, y);
-		simutotal->SetPointError(tot, 0, factor*sqrt(count_list_total[j]));
-		tot++;
-    cout<<"energy="<<energy<<endl;
-		cout<<"nb event="<<count_list_total[j]<<endl;
-		cout<<count_total<<endl;
-		cout<<count<<endl;
-		cout<<count1<<endl;
-		cout<<"y="<<y<<endl;
-		cout<<factor*sqrt(count_list_total[j]);
-
-
-		y=count_list_phot[j]*factor;
-    simuphot->SetPoint(pho, energy, y);
-		simuphot->SetPointError(pho, 0, factor*sqrt(count_list_phot[j]));
-		pho++;
-
-		y=count_list_conv[j]*factor;
-    simuconv->SetPoint(con, energy, y);
-		simuconv->SetPointError(con, 0, factor*sqrt(count_list_conv[j]));
-		con++;
-
-		y=count_list_compt[j]*factor;
-    simucompt->SetPoint(com, energy, y);
-		simucompt->SetPointError(com, 0, y*sqrt(Events));
-		com++;
-
-		y=count_list_rayl[j]*factor;
-    simurayl->SetPoint(ray, energy, y);
-		//simurayl->SetPointError(ray, 0, factor*sqrt(count_list_rayl[j]));
-		ray++;
-}
 
 
 ////////////
 
 ifstream file("data_gamma.csv");
 const int n=57;
-double E[n], RAYL[n], COMPT[n], PHOT[n], CONVN[n], CONVE[n], TOTAL[n];
+double E[n], RAYL[n], COMPT[n], PHOT[n], CONVN[n], CONVE[n], TOTAL[n], CONV[n];
 
 for (int i=0; i<n; i++)
     {
@@ -139,6 +121,10 @@ for (int i=0; i<n; i++)
     }
 file.close();
 
+for (int i=0; i<n; i++)
+{
+  E[i]=E[i]*1000;
+}
 
 //////////////
 TCanvas *c1 = new TCanvas("c1", "Gamma", 20,20,1500,500);
@@ -150,11 +136,11 @@ c1->cd(1);
 gPad->SetLogx();
 gPad->SetLogy();
 graphtotal->Draw("al");
-simutotal->Draw("*same");
+simutotal->Draw("*");
 graphtotal->SetLineColor(kRed);
 graphtotal->SetTitle("Total");
-graphtotal->GetXaxis()->SetTitle("Energy (MeV)");
-graphtotal->GetYaxis()->SetTitle("Total Attenuation (g/cm2)");
+graphtotal->GetXaxis()->SetTitle("Energy (keV)");
+graphtotal->GetYaxis()->SetTitle("Cross Section (barn)");
 
 //Rayleigh effect
 TGraph* graphrayl = new TGraph(n, E, RAYL);
@@ -165,6 +151,8 @@ graphrayl->Draw("al");
 simurayl->Draw("*same");
 graphrayl->SetLineColor(kRed);
 graphrayl->SetTitle("Rayleigh effect");
+graphtotal->GetXaxis()->SetTitle("Energy (keV)");
+graphtotal->GetYaxis()->SetTitle("Cross Section (barn)");
 
 
 //Compton effect
@@ -176,6 +164,8 @@ graphcompt->Draw("al");
 simucompt->Draw("*same");
 graphcompt->SetLineColor(kRed);
 graphcompt->SetTitle("Compton Effect");
+graphtotal->GetXaxis()->SetTitle("Energy (keV)");
+graphtotal->GetYaxis()->SetTitle("Cross Section (barn)");
 
 
 //Photoelectric
@@ -187,28 +177,24 @@ graphphot->Draw("al");
 simuphot->Draw("*same");
 graphphot->SetLineColor(kRed);
 graphphot->SetTitle("Photoelectric");
+graphphot->GetXaxis()->SetTitle("Energy (keV)");
+graphphot->GetYaxis()->SetTitle("Cross Section (barn)");
 
-
+for (int i=0; i<=n; i++)
+{
+CONV[i]=CONVN[i]+CONVE[i];
+}
 
 //Conversion interne nucléaire
-TGraph* graphconvn = new TGraph(n, E, CONVN);
+TGraph* graphconvn = new TGraph(n, E, CONV);
 c1->cd(5);
 gPad->SetLogx();
 gPad->SetLogy();
 graphconvn->Draw("al");
 simuconv->Draw("*same");
 graphconvn->SetLineColor(kRed);
-graphconvn->SetTitle("Nuclear Conversion");
-
-
-//Conversion interne electronique
-TGraph* graphconve = new TGraph(n, E, CONVE);
-c1->cd(6);
-gPad->SetLogx();
-gPad->SetLogy();
-graphconve->Draw("al");
-simuconv->Draw("*same");
-graphconve->SetLineColor(kRed);
-graphconve->SetTitle("Electronic Conversion");
+graphconvn->SetTitle("Conversion Interne");
+graphtotal->GetXaxis()->SetTitle("Energy (keV)");
+graphtotal->GetYaxis()->SetTitle("Cross Section (barn)");
 
 }

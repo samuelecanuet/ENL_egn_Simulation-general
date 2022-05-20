@@ -25,7 +25,8 @@ struct RunTally {
   std::vector<float> EPart;
   std::vector<float> EdepPart;
   std::vector<float> LPart;
-  std::vector<std::string> ProcessPart;
+  int ProcessPart;
+  std::string NamePart;
 
   inline int operator ==(const RunTally& right) const
   {return (this==&right);}
@@ -45,8 +46,9 @@ public:
   void FillEPart(G4float e){Statistics.EPart.push_back(e);}
   void FillEdepPart(G4float e){Statistics.EdepPart.push_back(e);}
   void FillLPart(G4float e){Statistics.LPart.push_back(e);}
-  void FillProcessPart(G4String e){Statistics.ProcessPart.push_back(e);}
-  //void AddNbProcess(G4int nb){Statistics.NbProcess+=nb;}
+  void SetProcess(G4int nb){Statistics.ProcessPart=nb;}
+  void SetName(G4String name){Statistics.NamePart=name;}
+
 private:
 
   TTree *EventTree;
@@ -54,10 +56,6 @@ private:
   RunTally Statistics;
 
   G4String suffixe;
-
-
-
-
 
 };
 
