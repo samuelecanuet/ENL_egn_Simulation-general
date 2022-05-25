@@ -78,7 +78,7 @@ ENLegnSimPhysics::ENLegnSimPhysics():  G4VModularPhysicsList(), fThermal(true)
   // Here used the default cut value you have typed in
 
   //defaultCutValue = 0.001*mm; //0.001
-  defaultCutValue =1*cm; //0.001
+  defaultCutValue =1*mm; //0.001
   //was 0.5*mm
 
   SetVerboseLevel(1);
