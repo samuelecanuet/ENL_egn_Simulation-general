@@ -27,7 +27,8 @@ public:
 public:
 
   G4LogicalVolume *GetPlaque1();
-
+  // G4LogicalVolume *GetPlaque2();
+  // G4LogicalVolume *GetsubPlaque1();
 
 private:
 
@@ -46,6 +47,8 @@ private:
 
   G4double PlaqueLength;
   G4double PlaqueThickness;
+  G4double subPlaqueThickness;
+
 
   // Other
   G4VisAttributes *clear;

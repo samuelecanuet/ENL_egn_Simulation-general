@@ -173,9 +173,13 @@ G4VPhysicalVolume* ENLegnSimGeometry::Construct( ){
   //*********************** *********
   //Simply calls functions from Detector() class
   LogicalPlaque1 = Geom->GetPlaque1();
+  // LogicalsubPlaque1 = Geom->GetsubPlaque1();
+  // LogicalPlaque2 = Geom->GetPlaque2();
 
   // Set colors of various block materials
-  LogicalPlaque1->SetVisAttributes(black);
+  LogicalPlaque1->SetVisAttributes(blue);
+  // LogicalsubPlaque1->SetVisAttributes(red);
+  // LogicalPlaque2->SetVisAttributes(blue);
 
 
 
@@ -197,6 +201,16 @@ G4VPhysicalVolume* ENLegnSimGeometry::Construct( ){
     (DontRotate,G4ThreeVector(0*mm,0.*mm,0.*mm)), // Set at origin as basis of everything else
     LogicalPlaque1,"Plaque1",
     LogicalWorld,true,0);
+
+  // PhysicalsubPlaque1 = new G4PVPlacement(G4Transform3D
+  //     (DontRotate,G4ThreeVector(0*mm,0.*mm,0.1*mm)), // Set at origin as basis of everything else
+  //     LogicalPlaque1,"subPlaque1",
+  //     LogicalWorld,true,0);
+  //
+  // PhysicalPlaque2 = new G4PVPlacement(G4Transform3D
+  //     (DontRotate,G4ThreeVector(0*mm,0.*mm,1.1*mm)), // Set at origin as basis of everything else
+  //     LogicalPlaque1,"Plaque2",
+  //     LogicalWorld,true,0);
 
 
     #else

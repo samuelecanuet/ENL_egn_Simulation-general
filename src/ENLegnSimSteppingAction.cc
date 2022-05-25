@@ -46,7 +46,7 @@ ENLegnSimSteppingAction::ENLegnSimSteppingAction()
     G4float depositenergy = aStep->GetTotalEnergyDeposit();
     G4float length = aStep->GetStepLength();
     G4String processname = aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
-    G4String PreVolume = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName();
+    G4String volume = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName();
     G4String partname = aStep->GetTrack()->GetDefinition()->GetParticleName();
 
     //#######################################################################
@@ -55,27 +55,29 @@ ENLegnSimSteppingAction::ENLegnSimSteppingAction()
     //#######################################################################
     //#######################################################################
 
-    if (Parent_ID == 0)
+    if (Parent_ID == 0 && depositenergy != 0)
     {
-      evtac->FillEPart(kineticenergy/MeV);
+      evtac->FillEPart(kineticenergy/keV);
       //G4cout<<"EPart="<<kineticenergy/MeV<<G4endl;
-      evtac->FillEdepPart(depositenergy/MeV);
+      evtac->FillEdepPart(depositenergy/keV);
       //G4cout<<"EdepPart="<<depositenergy/MeV<<G4endl;
       evtac->FillLPart(length/cm);
       //G4cout<<"Length="<<length/cm<<G4endl;
       evtac->SetName(partname);
       //G4cout<<"Particle Name : "<<partname<<G4endl;
-
+      evtac->FillNameVolume(volume);
+      //G4cout<<"Volume : "<<volume<<G4endl;
       if (partname == "gamma")
       {
         if (processname == "conv"){evtac->SetProcess(1);}
         if (processname == "phot"){evtac->SetProcess(2);}
         if (processname == "compt"){evtac->SetProcess(3);}
         if (processname == "Rayl"){evtac->SetProcess(4);}
+        aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 
       }
+
     }
-    aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 
 
 

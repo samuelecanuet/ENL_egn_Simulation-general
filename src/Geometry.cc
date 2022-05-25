@@ -65,6 +65,10 @@ Geometry::Geometry(G4String buildfile){
   	config >> value >> unit;
   	PlaqueThickness = value*G4UnitDefinition::GetValueOf(unit);
       }
+      else if(variable == "subPlaqueThickness"){
+    config >> value >> unit;
+    subPlaqueThickness = value*G4UnitDefinition::GetValueOf(unit);
+      }
     }
   }
   config.close();
@@ -74,6 +78,7 @@ Geometry::Geometry(G4String buildfile){
     G4cout << "\n The Variables that we read in are: "
     << "\n PlaqueLength = " << PlaqueLength
     << "\n PlaqueThickness = " << PlaqueThickness
+    << "\n subPlaqueThickness = " << subPlaqueThickness
 
     << "\n " << G4endl;
 
@@ -87,14 +92,26 @@ Geometry::~Geometry(){
 }
 
 
-G4LogicalVolume *Geometry::GetPlaque1(){
-
+G4LogicalVolume *Geometry::GetPlaque1()
+{
   Material = detecProp->GetMaterial("G4_Si");
-
-  G4Box *Box = new G4Box   ("Box",             //its name
-  			    //PlaqueLength/2, PlaqueLength/2, PlaqueThickness/2);    //its size
-            PlaqueLength/2, PlaqueLength/2, PlaqueThickness);    //its size
+  G4Box *Box = new G4Box("Box", PlaqueLength/2, PlaqueLength/2, PlaqueThickness);
   LogicalVolume = new G4LogicalVolume(Box, Material, "Plaque1",0,0,0);
-
   return LogicalVolume;
 }
+
+// G4LogicalVolume *Geometry::GetsubPlaque1()
+// {
+//   Material = detecProp->GetMaterial("G4_Ag");
+//   G4Box *Box = new G4Box("Box", PlaqueLength/2, PlaqueLength/2, subPlaqueThickness);
+//   LogicalVolume = new G4LogicalVolume(Box, Material, "SubPlaque1",0,0,0);
+//   return LogicalVolume;
+// }
+//
+// G4LogicalVolume *Geometry::GetPlaque2()
+// {
+//   Material = detecProp->GetMaterial("G4_Si");
+//   G4Box *Box = new G4Box("Box", PlaqueLength/2, PlaqueLength/2, PlaqueThickness);
+//   LogicalVolume = new G4LogicalVolume(Box, Material, "Plaque2",0,0,0);
+//   return LogicalVolume;
+// }

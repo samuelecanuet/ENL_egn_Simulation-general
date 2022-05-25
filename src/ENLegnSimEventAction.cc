@@ -40,9 +40,9 @@ void ENLegnSimEventAction::BeginOfEventAction(const G4Event* evt){
   Statistics.EdepPart.clear();
   Statistics.LPart.clear();
   Statistics.ProcessPart=0;
-  Statistics.NamePart="Unknown";
-
-
+  //Statistics.NamePart="Unknown";
+  Statistics.NameVolume.clear();
+  
 }
 
 
