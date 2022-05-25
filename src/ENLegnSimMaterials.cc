@@ -168,7 +168,8 @@ void ENLegnSimMaterials::Construct()
 	//***********************
 	auto nistManager = G4NistManager::Instance();
   nistManager->FindOrBuildMaterial("G4_Si");
-	
+	nistManager->FindOrBuildMaterial("G4_Ag");
+
 	// DiAzote
 	G4double M_mole_N2 = 2*14; //en g/mole
 	G4double Pression = 100000; //(en Pa => 1 bar = 100 000 Pa)

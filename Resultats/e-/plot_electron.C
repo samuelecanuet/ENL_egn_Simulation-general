@@ -1,100 +1,43 @@
+   #include "plot_func.C"
+
+
+void plot_electron()
 {
-gROOT->Reset();
-gStyle->SetPalette(1);
-
-TFile* myFile = new TFile("data.root");
-TTree* myTree = (TTree*) myFile->Get("theRunTree");
-auto tprof = new TProfile("tprof", "Stopping Power", 5000, 0.01, 100, 1, 100);
-
-vector <float> *edep;
-vector <float> *e;
-vector <float> *l;
-
-myTree->SetBranchAddress("EdepPart", &edep);
-myTree->SetBranchAddress("EPart", &e);
-myTree->SetBranchAddress("LPart", &l);
-
-int Events = myTree->GetEntries();
-
-for (int i=0; i< Events; i++)
-	{
-	myTree->GetEvent(i);
-
-	for (int j=0; j<edep->size();j++)
-		{
-		tprof->Fill(e->at(j), edep->at(j)/(l->at(j)*2.329002));
-                
-		}
-	}
-
-const int a=1500;
-float El[a], Ll[a];
-float eventlength;
-for (int i=0; i< a; i++)
-{
-	myTree->GetEvent(i);
-        eventlength=0;
-        El[i]=e->at(0);
-
-	for (int j=0; j<edep->size();j++)
-          { eventlength+=l->at(j);}
-         Ll[i]=2.329002*eventlength;
-}
-TGraph* graphl = new TGraph(a, El, Ll);
-
-
-////////////
-
-ifstream file("data_estar_stop.csv");
-const int n=81;
-float E[n], N[n];
-
-for (int i=0; i<n; i++)
-    {
-      file >> E[i] >> N[i];
-    }
-file.close();
-
-TGraph* graphstop = new TGraph(n, E, N);
-graphstop->SetLineColor(kRed);
-
-////////////
-ifstream fileL("data_estar_length.csv");
-const int b=81;
-float E1[b], L[b];
-
-for (int i=0; i<b; i++)
-    {
-      fileL >> E1[i] >> L[i];
-    }
-fileL.close();
-
-TGraph* graphL = new TGraph(b, E1, L);
-graphL->SetLineColor(kRed);
-
-
-//////////////
-TCanvas *c1 = new TCanvas("c1", "Electron", 20,20,1500,500);
+TCanvas *c1 = new TCanvas("c1", "Proton", 20,20,1500,500);
 c1->Divide(2,1);
-
 c1->cd(1);
-tprof->Draw("lp");
+TGraph* graphstops = graphsimustop("data_1nm.root");
+graphstops->Draw("al*");
+graphstops->SetLineColor(kBlack);
+TGraph* graphstopd = graphdatastop("data_estar_stop.csv");
+graphstopd->Draw("same");
+graphstopd->SetLineColor(kRed);
 gPad->SetLogx();
 gPad->SetLogy();
-tprof->GetXaxis()->SetTitle("Energy (MeV)");
-tprof->GetYaxis()->SetTitle("Stopping Power (MeV cm2/g)");
-graphstop->Draw("same");
+graphstopd->SetTitle("Stoppping Power ; Energy (keV); Stopping Power (keV cm2/g)");
 
+
+auto legend1 = new TLegend(0.7,0.7,0.9,0.9);
+legend1->AddEntry(graphstopd, "ESTAR data");
+legend1->AddEntry(graphstops, "opt3, cut=1nm");
+legend1->Draw();
+
+////////
 c1->cd(2);
+TGraph* graphlengthd = graphdatalength("data_estar_length.csv");
+graphlengthd->Draw("al");
+graphlengthd->SetLineColor(kRed);
 gPad->SetLogx();
 gPad->SetLogy();
-graphl->Draw("A*");
-graphl->SetTitle("CSDA ; Energy (MeV); CSDA (g/cm2)");
-graphL->Draw("same");
+graphlengthd->SetTitle("CSDA ; Energy (keV); CSDA (g/cm2)");
 
+TGraph* graphlengths = graphsimulength("data_1nm.root");
+graphlengths->Draw("*same");
 
+auto legend2 = new TLegend(0.7,0.7,0.9,0.9);
+legend2->AddEntry(graphlengthd, "ESTAR data");
+legend2->AddEntry(graphlengths, "1nm");
 
-
-
+legend2->Draw();
 
 }

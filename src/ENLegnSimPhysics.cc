@@ -23,8 +23,7 @@
 #include "G4OpWLS.hh"
 #include "G4GenericIon.hh"
 #include "G4Decay.hh"
-#include "G4IonConstructor.hh"
-#include "G4EmStandardPhysics_option4.hh"
+#include "G4EmStandardPhysics_option3.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4Gamma.hh"
 #include "G4Electron.hh"
@@ -63,7 +62,7 @@
 #include "G4LENDorBERTModel.hh"
 #include "G4LENDCombinedCrossSection.hh"
 
-
+#include "G4eIonisation.hh"
 
 
 
@@ -79,7 +78,7 @@ ENLegnSimPhysics::ENLegnSimPhysics():  G4VModularPhysicsList(), fThermal(true)
   // Here used the default cut value you have typed in
 
   //defaultCutValue = 0.001*mm; //0.001
-  defaultCutValue = 0.01*um; //0.001
+  defaultCutValue =1*cm; //0.001
   //was 0.5*mm
 
   SetVerboseLevel(1);
@@ -91,7 +90,8 @@ ENLegnSimPhysics::ENLegnSimPhysics():  G4VModularPhysicsList(), fThermal(true)
   raddecayList = new G4RadioactiveDecayPhysics();
 
   // EM physics
-  emPhysicsList = new G4EmStandardPhysics_option4();
+  emPhysicsList = new G4EmStandardPhysics_option3();
+
 }
 
 ENLegnSimPhysics::~ENLegnSimPhysics(){
@@ -111,12 +111,15 @@ void ENLegnSimPhysics::ConstructProcess()
   // Transportation, electromagnetic and general processes
 
   AddTransportation();
-  //ConstructEM();
-  //ConstructGeneral();
-  // Electromagnetic physics list
   emPhysicsList->ConstructProcess();
   particleList->ConstructProcess();
   raddecayList->ConstructProcess();
+
+  //ConstructEM();
+  //ConstructGeneral();
+  // Electromagnetic physics list
+
+
 
 }
 

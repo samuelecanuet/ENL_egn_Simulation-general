@@ -136,11 +136,17 @@ c1->cd(1);
 gPad->SetLogx();
 gPad->SetLogy();
 graphtotal->Draw("al");
-simutotal->Draw("*");
+simutotal->Draw("*same");
+simutotal->SetMarkerSize(0.8);
 graphtotal->SetLineColor(kRed);
 graphtotal->SetTitle("Total");
 graphtotal->GetXaxis()->SetTitle("Energy (keV)");
 graphtotal->GetYaxis()->SetTitle("Cross Section (barn)");
+
+auto legend = new TLegend(0.7,0.7,0.9,0.9);
+legend->AddEntry(graphtotal, "XCOM data");
+legend->AddEntry(simutotal, "Simulation");
+legend->Draw();
 
 //Rayleigh effect
 TGraph* graphrayl = new TGraph(n, E, RAYL);
@@ -196,5 +202,7 @@ graphconvn->SetLineColor(kRed);
 graphconvn->SetTitle("Conversion Interne");
 graphtotal->GetXaxis()->SetTitle("Energy (keV)");
 graphtotal->GetYaxis()->SetTitle("Cross Section (barn)");
+
+
 
 }

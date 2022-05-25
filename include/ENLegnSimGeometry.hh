@@ -59,11 +59,15 @@ private:
   // Logical Volumes
   G4LogicalVolume *LogicalWorld;
   G4LogicalVolume *LogicalPlaque1;
+  // G4LogicalVolume *LogicalsubPlaque1;
+  // G4LogicalVolume *LogicalPlaque2;
 
 
   // Physical volumes
   G4VPhysicalVolume *PhysicalWorld;
   G4VPhysicalVolume *PhysicalPlaque1;
+  // G4VPhysicalVolume *PhysicalsubPlaque1;
+  // G4VPhysicalVolume *PhysicalPlaque2;
 
 
 

@@ -1,13 +1,13 @@
  #!/bin/bash
 echo "Début de traitement"
 
-part=gamma
-emax=1000000
-e=1
+part=proton
+emax=100000
+e=5
 
-pow='1/4'
+pow='1/5'
 coef=10**$pow
-coef=2
+
 
 e1=$e
 e2=$e
@@ -29,7 +29,7 @@ do
         # Suppression fichier temporaire
         rm base_${e1}_fichier_bis.mac
         rm base_${e1}_fichier_bis1.mac
-	      ./ENLegnSim ../Resultats/${part}_Si_${e1}keV 1000000 base_${e1}_fichier.mac
+	      ./ENLegnSim ../Resultats/${part}_Si_${e1}keV 100 base_${e1}_fichier.mac
         rm base_${e1}_fichier.mac
 
 #merge files in data.root
