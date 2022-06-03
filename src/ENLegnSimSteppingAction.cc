@@ -48,6 +48,7 @@ ENLegnSimSteppingAction::ENLegnSimSteppingAction()
     G4String processname = aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
     G4String volume = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName();
     G4String partname = aStep->GetTrack()->GetDefinition()->GetParticleName();
+    G4double z = aStep->GetTrack()->GetPosition().z();
 
     //#######################################################################
     //#######################################################################
@@ -55,7 +56,7 @@ ENLegnSimSteppingAction::ENLegnSimSteppingAction()
     //#######################################################################
     //#######################################################################
 
-    if (Parent_ID == 0 && depositenergy != 0)
+    if (Parent_ID == 0)
     {
       evtac->FillEPart(kineticenergy/keV);
       //G4cout<<"EPart="<<kineticenergy/MeV<<G4endl;
@@ -67,6 +68,9 @@ ENLegnSimSteppingAction::ENLegnSimSteppingAction()
       //G4cout<<"Particle Name : "<<partname<<G4endl;
       evtac->FillNameVolume(volume);
       //G4cout<<"Volume : "<<volume<<G4endl;
+      evtac->Fillz(z/cm);
+      //G4cout<<"z = "<<z<<G4endl;
+
       if (partname == "gamma")
       {
         if (processname == "conv"){evtac->SetProcess(1);}

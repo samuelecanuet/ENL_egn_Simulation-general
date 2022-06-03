@@ -1,7 +1,9 @@
+#include <math.h>
+
 TGraph* graphdatastop(const char* filename)
 {
   ifstream file(filename);
-  const int n=80;
+  const int n=81;
   float E[n], N[n];
 
   for (int i=0; i<n; i++)
@@ -24,7 +26,7 @@ TGraph* graphdatastop(const char* filename)
 TGraph* graphdatalength(const char* filename)
 {
   ifstream file(filename);
-  const int n=80;
+  const int n=81;
   float E[n], N[n];
 
   for (int i=0; i<n; i++)
@@ -42,12 +44,12 @@ TGraph* graphdatalength(const char* filename)
   return graph;
 }
 
-TGraph* graphsimustop(const char* filename)
+TGraphErrors* graphsimustop(const char* filename)
 {
   TFile* myFile = new TFile(filename);
   TTree* myTree = (TTree*) myFile->Get("theRunTree");
-  TGraph* tprof = new TGraph();
-  //myTree->Scan();
+  TGraphErrors* tprof = new TGraphErrors();
+
   vector <float> *edep=0;
   vector <float> *e=0;
   vector <float> *l=0;
@@ -55,12 +57,16 @@ TGraph* graphsimustop(const char* filename)
   myTree->SetBranchAddress("EdepPart", &edep);
   myTree->SetBranchAddress("EPart", &e);
   myTree->SetBranchAddress("LPart", &l);
+
   int Events = myTree->GetEntries();
   int count=0;
   double initialenergy=0;
   int county=0;
-  double y=0;
+  double ytotal=0;
   int countt=0;
+  double std=0;
+  vector <double> y;
+  double sum=0;
 
   for (int i=0; i< Events; i++)
   {
@@ -68,10 +74,20 @@ TGraph* graphsimustop(const char* filename)
     if (i==0){initialenergy=e->at(0);}
 
     if (0.9*round(initialenergy)>round(e->at(0)) || 1.1*round(initialenergy)<round(e->at(0)) || i==Events)
-    {myTree->GetEvent(i);
-      tprof->SetPoint(count, e->at(0), y/(county));
-      //cout<<e->at(0)<<"      "<<y/county<<"     "<<county<<endl;
-      y=0;
+    {
+      myTree->GetEvent(i-1);
+      tprof->SetPoint(count, e->at(0), ytotal/(county*2.329002));
+
+      sum=0;
+      int len=y.size();
+      for (int j=0; j<=len; j++)
+      {
+        sum+=pow(y[j]/2.329002, 2)-pow(ytotal/(county*2.329002),2);
+      }
+      std=sqrt(sum/county);
+      //tprof->SetPointError(count, 0, std);
+      ytotal=0;
+      y.clear();
       county=1;
       count++;
       myTree->GetEvent(i);
@@ -79,24 +95,16 @@ TGraph* graphsimustop(const char* filename)
     }
 
     else
-    {double length=0;
-    double ee=0;
-      //for (int j=0; j<e->size(); j++)
-      //{
+    {
+      double length=0;
+      double ee=0;
       length=l->at(0);
       ee=edep->at(0);
-      //}
-      //cout<<e->at(0)<<"      "<<ee/(length*2.329002)<<"     "<<county<<endl;
-      y+=ee/(length*2.329002);
+      y.push_back(ee/(length));
+      ytotal+=ee/(length);
       county++;
-
-
-      //tprof->SetPoint(countt, e->at(0), y/2.3);
-      countt++;
     }
   }
-
-
   return tprof;
 }
 
@@ -154,5 +162,63 @@ TGraph* graphsimulength(const char* filename)
   }
 
 
+  return tprof;
+}
+
+TProfile* graphsimubragg(const char* filename, float energy, int bin)
+{
+
+  TFile* myFile = new TFile(filename);
+  TTree* myTree = (TTree*) myFile->Get("theRunTree");
+
+  vector <float> *edep=0;
+  vector <float> *e=0;
+  vector <float> *l=0;
+  vector <double> *z=0;
+  //myTree->Scan();
+  myTree->SetBranchAddress("EdepPart", &edep);
+  myTree->SetBranchAddress("EPart", &e);
+  myTree->SetBranchAddress("LPart", &l);
+  myTree->SetBranchAddress("z", &z);
+  int Events = myTree->GetEntries();
+  double ytotal=0;
+  bool valid=false;
+
+  auto tprof = new TProfile("tprof", "Bragg pic of proton in Si", bin, 0, 2.5);
+  for (int i=0; i<=Events; i++)
+  {
+    myTree->GetEvent(i);
+    if (energy==e->at(0))
+    {
+      valid=true;
+    }
+  }
+  if (valid==true)
+  {
+    for (int i=0; i<=Events; i++)
+    {
+      myTree->GetEvent(i);
+      if (e->at(0)==energy)
+      {
+        double ee=0;
+        double zpos=0;
+        double length=0;
+
+        for (int j=0; j<z->size(); j++)
+        {
+          length+=l->at(j);
+          ee+=edep->at(j);
+          zpos=z->at(j);
+          ytotal=ee*0.001/length;
+          tprof->Fill(zpos, ytotal/(2.3*1000));
+        }
+      }
+    }
+
+  }
+  else
+  {
+    cout<<"ENERGY NOT FOUND"<<endl;
+  }
   return tprof;
 }

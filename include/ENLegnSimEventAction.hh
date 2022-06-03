@@ -28,6 +28,7 @@ struct RunTally {
   int ProcessPart;
   std::string NamePart;
   std::vector<std::string> NameVolume;
+  std::vector<double> z;
 
   inline int operator ==(const RunTally& right) const
   {return (this==&right);}
@@ -50,6 +51,7 @@ public:
   void SetProcess(G4int nb){Statistics.ProcessPart=nb;}
   void SetName(G4String name){Statistics.NamePart=name;}
   void FillNameVolume(G4String name){Statistics.NameVolume.push_back(name);}
+  void Fillz(G4double z){Statistics.z.push_back(z);}
 
 private:
 

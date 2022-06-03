@@ -27,9 +27,8 @@
 #include "G4UnitsTable.hh"
 #include <math.h>
 
-//#ifndef disable_gdml
 #include "G4GDMLParser.hh"
-//#endif
+
 
 
 using namespace CLHEP;

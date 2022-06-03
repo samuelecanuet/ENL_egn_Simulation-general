@@ -18,12 +18,12 @@ class  ENLegnSimPhysics:  public G4VModularPhysicsList
 protected:
   virtual void ConstructProcess();
   virtual void ConstructParticle();
-  virtual void SetCuts();
+  // virtual void SetCuts();
 
 private:
   G4VPhysicsConstructor*  emPhysicsList;
   G4VPhysicsConstructor*  particleList;
-  G4VPhysicsConstructor*  raddecayList;
+  //G4VPhysicsConstructor*  raddecayList;
   G4bool              fThermal;
 };
 #endif

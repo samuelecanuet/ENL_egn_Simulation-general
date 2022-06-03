@@ -1,7 +1,19 @@
- #!/bin/bash
+#!/bin/bash
 echo "Début de traitement"
 
 part=proton
+
+if [[ "$part" == *proton* ]]
+then
+#modif="/process/eLoss/StepFunctionMuHad 0.02 0.01 um"
+modif="#"
+elif [[ "$part" == *e-* ]]
+then
+modif="#"
+else
+modif="#"
+fi
+
 emax=100000
 e=5
 
@@ -22,14 +34,13 @@ do
     done
         let e1=$e1*$coef
         # Creation du fichier a partir du fichier de base (fichier temporaire)
-        cp vrml_base.mac base_${e1}_fichier_bis1.mac
+        cp vrml_base.mac base_${e1}_fichier_bis.mac
         # Mise en place de la variable
-        sed -e "s/%energy/$e1/g"  base_${e1}_fichier_bis1.mac > base_${e1}_fichier_bis.mac
-        sed -e "s/%particle/$part/g" base_${e1}_fichier_bis.mac > base_${e1}_fichier.mac
+        sed -e "5c$modif" -e "s/%energy/$e1/g" -e "s/%particle/$part/g" base_${e1}_fichier_bis.mac > base_${e1}_fichier.mac
         # Suppression fichier temporaire
         rm base_${e1}_fichier_bis.mac
-        rm base_${e1}_fichier_bis1.mac
-	      ./ENLegnSim ../Resultats/${part}_Si_${e1}keV 100 base_${e1}_fichier.mac
+
+	      ./ENLegnSim ../Resultats/${part}_Si_${e1}keV 3000 base_${e1}_fichier.mac
         rm base_${e1}_fichier.mac
 
 #merge files in data.root

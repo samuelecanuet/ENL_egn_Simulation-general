@@ -42,8 +42,6 @@ PMMA(0)
 {
 
 
-	//G4cout << "Test" << G4endl;
-
 	std::ifstream config_prop;
 	config_prop.open(prop_buildfile);
 	if (!config_prop.is_open())
@@ -169,6 +167,7 @@ void ENLegnSimMaterials::Construct()
 	auto nistManager = G4NistManager::Instance();
   nistManager->FindOrBuildMaterial("G4_Si");
 	nistManager->FindOrBuildMaterial("G4_Ag");
+	nistManager->FindOrBuildMaterial("G4_WATER");
 
 	// DiAzote
 	G4double M_mole_N2 = 2*14; //en g/mole
