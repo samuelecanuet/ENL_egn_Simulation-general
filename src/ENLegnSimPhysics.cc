@@ -69,7 +69,7 @@ using namespace CLHEP;
 ENLegnSimPhysics::ENLegnSimPhysics():  G4VModularPhysicsList(), fThermal(true)
 {
 
-  defaultCutValue =10*um;
+  defaultCutValue = 10*um;
   SetVerboseLevel(1);
 
   //default physics

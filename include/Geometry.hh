@@ -22,13 +22,17 @@ public:
   //constructor, builds from keys specified in buildfile
   Geometry(G4String buildfile);
   ~Geometry();
-  //  void Construct();
+
 
 public:
 
-  G4LogicalVolume *GetPlaque1();
-  // G4LogicalVolume *GetPlaque2();
-  // G4LogicalVolume *GetsubPlaque1();
+  G4LogicalVolume *GetStackIP();
+
+  G4double GetPlaqueLength(){return PlaqueLength;}
+  G4double GetPlaqueThickness(){return PlaqueThickness;}
+  G4double GetsubPlaqueThickness(){return subPlaqueThickness;}
+  G4double Getgap(){return gap;}
+  G4int GetnbPlaque(){return nbPlaque;}
 
 private:
 
@@ -44,10 +48,12 @@ private:
 
   // Logical Volumes
   G4LogicalVolume *LogicalVolume;
-
   G4double PlaqueLength;
   G4double PlaqueThickness;
   G4double subPlaqueThickness;
+  G4double gap;
+  G4int nbPlaque;
+
 
 
   // Other

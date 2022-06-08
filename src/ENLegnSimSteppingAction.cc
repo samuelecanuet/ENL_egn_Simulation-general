@@ -24,6 +24,7 @@
 #include "TRandom3.h"
 #include "TF1.h"
 
+#include <sstream>
 
 using namespace CLHEP;
 
@@ -66,7 +67,7 @@ ENLegnSimSteppingAction::ENLegnSimSteppingAction()
       //G4cout<<"Length="<<length/cm<<G4endl;
       evtac->SetName(partname);
       //G4cout<<"Particle Name : "<<partname<<G4endl;
-      evtac->FillNameVolume(volume);
+      //evtac->FillNameVolume(volume);
       //G4cout<<"Volume : "<<volume<<G4endl;
       evtac->Fillz(z/cm);
       //G4cout<<"z = "<<z<<G4endl;
@@ -80,8 +81,18 @@ ENLegnSimSteppingAction::ENLegnSimSteppingAction()
         aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 
       }
+      if (volume.find("Plaque") != std::string::npos)
+      {
+        for (G4int i=0; i<10;i++)
+        {
+          if (std::to_string(i)==volume.at(volume.size()-1))
+          {
+            evtac->FillVolume(i);
+          }
+        }
+      }
 
-    }
+     }
 
 
 

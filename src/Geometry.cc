@@ -68,6 +68,14 @@ Geometry::Geometry(G4String buildfile){
     config >> value >> unit;
     subPlaqueThickness = value*G4UnitDefinition::GetValueOf(unit);
       }
+      else if(variable == "gap"){
+    config >> value >> unit;
+    gap = value*G4UnitDefinition::GetValueOf(unit);
+      }
+      else if(variable == "nbPlaque"){
+    config >> value;
+    nbPlaque = value;
+      }
     }
   }
   config.close();
@@ -78,39 +86,23 @@ Geometry::Geometry(G4String buildfile){
     << "\n PlaqueLength = " << PlaqueLength
     << "\n PlaqueThickness = " << PlaqueThickness
     << "\n subPlaqueThickness = " << subPlaqueThickness
-
+    << "\n PlaqueNumber = " << nbPlaque
     << "\n " << G4endl;
 
 }
 // ***********************
 // Destructor
 // ***********************
-Geometry::~Geometry(){
+Geometry::~Geometry()
+{
   if(detecProp) { delete detecProp; detecProp = 0; }
   if(clear) { delete clear; clear = 0; }
 }
 
-
-G4LogicalVolume *Geometry::GetPlaque1()
+G4LogicalVolume *Geometry::GetStackIP()
 {
-  Material = detecProp->GetMaterial("G4_Si");
-  G4Box *Box = new G4Box("Box", PlaqueLength/2, PlaqueLength/2, PlaqueThickness);
-  LogicalVolume = new G4LogicalVolume(Box, Material, "Plaque1",0,0,0);
-  return LogicalVolume;
+    Material = detecProp->GetMaterial("G4_Si");
+    G4Box *Box = new G4Box("Stack_IP", PlaqueLength/2, PlaqueLength/2, PlaqueThickness);
+    LogicalVolume = new G4LogicalVolume(Box, Material, "Stack_IP");
+    return LogicalVolume;
 }
-
-// G4LogicalVolume *Geometry::GetsubPlaque1()
-// {
-//   Material = detecProp->GetMaterial("G4_Ag");
-//   G4Box *Box = new G4Box("Box", PlaqueLength/2, PlaqueLength/2, subPlaqueThickness);
-//   LogicalVolume = new G4LogicalVolume(Box, Material, "SubPlaque1",0,0,0);
-//   return LogicalVolume;
-// }
-//
-// G4LogicalVolume *Geometry::GetPlaque2()
-// {
-//   Material = detecProp->GetMaterial("G4_Si");
-//   G4Box *Box = new G4Box("Box", PlaqueLength/2, PlaqueLength/2, PlaqueThickness);
-//   LogicalVolume = new G4LogicalVolume(Box, Material, "Plaque2",0,0,0);
-//   return LogicalVolume;
-// }

@@ -4,7 +4,6 @@
 void plot_proton_cut()
 {
 TCanvas *c1 = new TCanvas("c1", "Proton", 20,20,1500,500);
-c1->Divide(2,1);
 c1->cd(1);
 TGraph* graphstopd = graphdatastop("data_pstar_stop.csv");
 graphstopd->Draw("al");
@@ -29,7 +28,8 @@ legend1->AddEntry(graphstops2, "opt4_w0_cut_10um");
 legend1->Draw();
 
 ////////
-c1->cd(2);
+TCanvas *c2 = new TCanvas("c2", "Proton", 20,20,1500,500);
+c2->cd(1);
 TGraph* graphlengthd = graphdatalength("data_pstar_length.csv");
 graphlengthd->Draw("al");
 graphlengthd->SetLineColor(kRed);
@@ -46,4 +46,46 @@ legend2->AddEntry(graphlengthd, "PSTAR data");
 legend2->AddEntry(graphlengths, "opt4_w_cut_10um");
 legend2->Draw();
 
+/////
+TCanvas *c3 = new TCanvas("c3", "Proton", 20,20,1500,500);
+c3->cd(1);
+vector <const char*> file;
+
+
+file.push_back("data_10.root");
+file.push_back("data_30.root");
+file.push_back("data_100.root");
+file.push_back("data_300.root");
+file.push_back("data_1000.root");
+file.push_back("data_3000.root");
+// file.push_back("data_10000.root");
+// file.push_back("data_30000.root");
+
+
+auto graphconvergence = new TGraphErrors();
+auto redcurve = new TGraph();
+
+
+double pt;
+double std;
+int nb;
+int count=0;
+
+for (int i=0;i<file.size();i++)
+{
+  auto [pt, std, nb] = convergepoint(file.at(i),"data_pstar_stop.csv");
+  graphconvergence->SetPoint(count, nb, pt);
+  cout<<nb<<"      "<<pt<<endl;
+  graphconvergence->SetPointError(count, 0, std);
+  count++;
+}
+
+redcurve->SetPoint(0, 0, 1);
+redcurve->SetPoint(1, 10000000000, 1);
+
+gPad->SetLogx();
+graphconvergence->Draw("a*");
+redcurve->Draw("same");
+redcurve->SetLineColor(kRed);
+graphconvergence->SetTitle("Convergence ; Nombre d'evenement; Ratio stopping power");
 }

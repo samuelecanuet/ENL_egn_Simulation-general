@@ -16,6 +16,8 @@ class G4VPhysicalVolume;
 #include "G4OpticalSurface.hh"
 #include "G4LogicalSkinSurface.hh"
 #include "CLHEP/Units/SystemOfUnits.h"
+#include "Geometry.hh"
+
 
 class  ENLegnSimGeometry:  public G4VUserDetectorConstruction
 {
@@ -39,6 +41,7 @@ private:
   G4Material *Air;
   G4Material *Si;
 
+
   // Colors for visualizations
   G4VisAttributes *invis;
   G4VisAttributes *white;
@@ -58,17 +61,19 @@ private:
 
   // Logical Volumes
   G4LogicalVolume *LogicalWorld;
-  G4LogicalVolume *LogicalPlaque1;
-  // G4LogicalVolume *LogicalsubPlaque1;
-  // G4LogicalVolume *LogicalPlaque2;
+  G4LogicalVolume *LogicalStackIP;
 
 
   // Physical volumes
   G4VPhysicalVolume *PhysicalWorld;
-  G4VPhysicalVolume *PhysicalPlaque1;
-  // G4VPhysicalVolume *PhysicalsubPlaque1;
-  // G4VPhysicalVolume *PhysicalPlaque2;
 
+
+  G4double PlaqueLength;
+  G4double PlaqueThickness;
+  G4double subPlaqueThickness;
+  G4double gap;
+  G4int nbPlaque;
+  G4VPhysicalVolume *physiStackIP[10];
 
 
 

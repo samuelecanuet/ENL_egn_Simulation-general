@@ -28,11 +28,6 @@ public:
 
 private:
   static const G4String path;
-  int PreviousTrack;
-  double NRJ1;
-  double Length_Track;
-  double Total_Length_Track;
-
 
 };
 #endif

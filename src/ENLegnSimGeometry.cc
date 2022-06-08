@@ -39,8 +39,16 @@ using namespace CLHEP;
 const G4String ENLegnSimGeometry::path_bin = "../bin/";
 const G4String ENLegnSimGeometry::path = "../simulation_input_files/";
 
+G4int layermax=8;
+
 // Constructor
-ENLegnSimGeometry::ENLegnSimGeometry(){}
+ENLegnSimGeometry::ENLegnSimGeometry()
+{
+  for (int i=1; i<=layermax; i++)
+  {
+    physiStackIP[i]=0;
+  }
+}
 
 // Destructor
 ENLegnSimGeometry::~ENLegnSimGeometry()
@@ -150,8 +158,7 @@ G4VPhysicalVolume* ENLegnSimGeometry::Construct( ){
   // Various dimensions
   // ***********************
 
-
-
+  G4double distance=0.;
 
 
   //#########################
@@ -172,18 +179,10 @@ G4VPhysicalVolume* ENLegnSimGeometry::Construct( ){
   // Build scint et wrapping volumes*
   //*********************** *********
   //Simply calls functions from Detector() class
-  LogicalPlaque1 = Geom->GetPlaque1();
-  // LogicalsubPlaque1 = Geom->GetsubPlaque1();
-  // LogicalPlaque2 = Geom->GetPlaque2();
+  LogicalStackIP = Geom->GetStackIP();
 
   // Set colors of various block materials
-  LogicalPlaque1->SetVisAttributes(blue);
-  // LogicalsubPlaque1->SetVisAttributes(red);
-  // LogicalPlaque2->SetVisAttributes(blue);
-
-
-
-
+  LogicalStackIP->SetVisAttributes(blue);
 
   //############################
   // DEFINE GEOMETRY PLACEMENTS#
@@ -197,20 +196,18 @@ G4VPhysicalVolume* ENLegnSimGeometry::Construct( ){
   //***********************
 
 
-  PhysicalPlaque1 = new G4PVPlacement(G4Transform3D
-    (DontRotate,G4ThreeVector(0*mm,0.*mm,0.*mm)), // Set at origin as basis of everything else
-    LogicalPlaque1,"Plaque1",
-    LogicalWorld,true,0);
+  for (G4int i=1; i<=layermax; i++)
+  {
+    G4String plaquename;
+    plaquename = "Plaque"+std::to_string(i);
+    physiStackIP[i] = new G4PVPlacement(G4Transform3D
+      (DontRotate,G4ThreeVector(0*mm,0.*mm, distance*mm)), // Set at origin as basis of everything else
+      LogicalStackIP, plaquename,
+      LogicalWorld,false,0, false);
+    distance+=Geom->GetPlaqueThickness()+Geom->GetsubPlaqueThickness()+Geom->Getgap();
 
-  // PhysicalsubPlaque1 = new G4PVPlacement(G4Transform3D
-  //     (DontRotate,G4ThreeVector(0*mm,0.*mm,0.1*mm)), // Set at origin as basis of everything else
-  //     LogicalPlaque1,"subPlaque1",
-  //     LogicalWorld,true,0);
-  //
-  // PhysicalPlaque2 = new G4PVPlacement(G4Transform3D
-  //     (DontRotate,G4ThreeVector(0*mm,0.*mm,1.1*mm)), // Set at origin as basis of everything else
-  //     LogicalPlaque1,"Plaque2",
-  //     LogicalWorld,true,0);
+  }
+
 
 
     #else
